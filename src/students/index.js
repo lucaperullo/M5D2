@@ -66,13 +66,39 @@ router.put("/:id", (req, res) => {
   const fileString = fileBleepBloop.toString();
   //parsing the previous file into a JSON
   const studentsArray = JSON.parse(fileString);
+  //creating new array without shit
+  const newStudentsArray = studentsArray.filter(
+    (student) => student.ID !== req.params.id
+  );
+  //the client modify the actual array and just do a put request to the students.json
+  const modifiedStudent = req.body;
+  //replacing the past array in order
+  modifiedStudent.ID = req.params.id;
+  //repushing the array with the new changes
+  newStudentsArray.push(modifiedStudent);
+  //fs.writing the new array
+  fs.writeFileSync(studPath, JSON.stringify(newStudentsArray));
+  //sending response to the client
+  res.send("Modified array fag");
 });
 
 //delete method
-router.delete("/", (req, res) => {
-  const studPath = path.join(__dirname, "students.json");
-  const fileBleepBloop = fs.readFileSync(studPath);
+router.delete("/:id", (req, res) => {
+  //selecting the path for anybody
+  const studPath = path.join(__dirname, "users.json");
+  //
+  const fileBleepBloop = fs.readFileSync(usersFilePath);
+  //
   const fileString = fileBleepBloop.toString();
+  //
   const studentsArray = JSON.parse(fileString);
+  //
+  const newStudentsArray = studentsArray.filter(
+    (user) => user.ID !== req.params.id
+  );
+  //
+  fs.writeFileSync(studPath, JSON.stringify(newStudentsArray));
+  //
+  res.status(204).send();
 });
 module.exports = router;
